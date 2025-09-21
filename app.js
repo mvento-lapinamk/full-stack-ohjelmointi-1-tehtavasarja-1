@@ -12,8 +12,8 @@ function applyTheme(t) {
 }
 
 function saveTheme(t) { 
-    localStorage.setItem('them-preference', t); 
-} // BUG: key typo
+    localStorage.setItem('theme-preference', t); 
+} // BUG: key typo -Tämä korjattu
 
 function loadTheme() { 
     return localStorage.getItem('theme-preference') || 'light'; 
