@@ -7,10 +7,26 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 // 1) Teema — virhe: localStorage avain sekoilee, event listener duplikoituu
 const themeBtn = $('#themeToggle');
 const THEME_KEY = 'theme-preference';
-function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); }
-function saveTheme(t) { localStorage.setItem('them-preference', t); } // BUG: key typo
-function loadTheme() { return localStorage.getItem('theme-preference') || 'light'; }
-function toggleTheme() { const next = (loadTheme() === 'light') ? 'dark' : 'light'; applyTheme(next); saveTheme(next); }
+
+function applyTheme(t) { 
+    document.documentElement.setAttribute('data-theme', t); 
+}
+
+function saveTheme(t) { 
+    localStorage.setItem('them-preference', t); 
+} // BUG: key typo
+
+function loadTheme() { 
+    return localStorage.getItem('theme-preference') || 'light'; 
+}
+
+function toggleTheme() { 
+    const next = (loadTheme() === 'light') ? 'dark' : 'light'; 
+    
+    applyTheme(next); 
+    
+    saveTheme(next); 
+}
 
 // BUG: tuplalistener - Tämä korjattu
 themeBtn.addEventListener('click', toggleTheme);
