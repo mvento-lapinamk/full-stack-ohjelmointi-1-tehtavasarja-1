@@ -12,11 +12,11 @@ function applyTheme(t) {
 }
 
 function saveTheme(t) { 
-    localStorage.setItem('theme-preference', t); 
+    localStorage.setItem(THEME_KEY, t); 
 } // BUG: key typo -Tämä korjattu
 
 function loadTheme() { 
-    return localStorage.getItem('theme-preference') || 'light'; 
+    return localStorage.getItem(THEME_KEY) || 'light'; 
 }
 
 function toggleTheme() { 
