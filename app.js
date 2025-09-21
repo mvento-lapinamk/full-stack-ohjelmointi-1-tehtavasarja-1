@@ -12,8 +12,7 @@ function saveTheme(t) { localStorage.setItem('them-preference', t); } // BUG: ke
 function loadTheme() { return localStorage.getItem('theme-preference') || 'light'; }
 function toggleTheme() { const next = (loadTheme() === 'light') ? 'dark' : 'light'; applyTheme(next); saveTheme(next); }
 
-// BUG: tuplalistener
-themeBtn.addEventListener('click', toggleTheme);
+// BUG: tuplalistener - Tämä korjattu
 themeBtn.addEventListener('click', toggleTheme);
 applyTheme(loadTheme());
 
