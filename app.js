@@ -1,8 +1,7 @@
 'use strict';
 
-// 0) Pieni apu
-const $ = (sel, root = document) => root.querySelector(sel);
-const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+// Tuodaan aputyökalut
+import { $ } from './scripts/helpers.js'
 
 // 1) Teema — virhe: localStorage avain sekoilee, event listener duplikoituu
 const themeBtn = $('#themeToggle');

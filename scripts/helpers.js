@@ -1,0 +1,3 @@
+// 0) Pieni apu
+export const $ = (sel, root = document) => root.querySelector(sel);
+export const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
