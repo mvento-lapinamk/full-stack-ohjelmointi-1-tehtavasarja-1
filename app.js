@@ -107,11 +107,36 @@ counterBtn.addEventListener('click', function (e) {
     }
 });
 
-// 4) Clipboard — virhe: ei permissioiden / https tarkistusta
+// 4) Clipboard — virhe: ei permissioiden / https tarkistusta - Tämä korjattu
+const copyStatusEl = document.getElementById('copyStatus');
 $('#copyBtn').addEventListener('click', async () => {
-    const text = $('#copyBtn').dataset.text;
-    await navigator.clipboard.writeText(text); // BUG: voi heittää virheen
-    alert('Kopioitu!');
+    copyStatusEl.textContent = '';
+    try {
+        // Permission tarkistus leikepöydälle kirjoittamiseen
+        const result = await navigator.permissions?.query({ name: 'clipboard-write' });
+            // Jos Permission granted, tarkistetaan protokolla/location
+            if(result.state === 'granted' && (location.protocol === 'https:' || location.hostname === 'localhost')) { 
+                // Jos protokolla on HTTPS tai location on localhost, kirjoitetaan leikepöydälle
+                const text = $('#copyBtn').dataset.text;
+                await navigator.clipboard.writeText(text); // BUG: voi heittää virheen
+                // Näytetään tieto onnistuneesta kopioinnista kahden sekunnin ajan
+                copyStatusEl.textContent = 'Kopioitu'
+                setTimeout(function(){
+                    copyStatusEl.textContent = '';
+                }, 2000);
+            }
+                // Jos Permission ei ole granted
+                else if(result.state !== 'granted') { 
+                // Näytetään ohjeistus
+                copyStatusEl.textContent = 'Leikepöydälle kopiointi ei ole sallittuna, tarkistathan sivuston asetukset.'
+            } else {
+                // Näytetään tieto suojaamattomasta yhteydestä
+                copyStatusEl.textContent = 'Leikepöydälle kopiointi ei onnistunut - suojaamaton yhteys.'
+            }
+    } catch (error) {
+        // Näytetään tieto virhetilanteesta 
+        copyStatusEl.textContent = ('Tapahtui virhe: ' + error)
+    }
 });
 
 // 5) IntersectionObserver — virhe: threshold/cleanup puuttuu
