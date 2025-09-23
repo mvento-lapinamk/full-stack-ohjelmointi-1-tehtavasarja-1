@@ -27,6 +27,9 @@ function toggleTheme() {
     saveTheme(next); 
 }
 
+// Alustetaan muuttuja PushState kontrollointiin
+let enablePushState = null;
+
 // BUG: tuplalistener - Tämä korjattu
 themeBtn.addEventListener('click', toggleTheme);
 applyTheme(loadTheme());
@@ -79,6 +82,12 @@ async function searchImages(query) {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const q = $('#q').value.trim();
+    // Tarkistetaan kuuluuko PushState suorittaa
+    if(enablePushState == 'yes') {
+        const url = new URL(location.href); // Haetaan nykyinen url muuttujaan
+        url.searchParams.set('q', q); // Haetaan hakusana url parametriin
+        history.pushState({}, '', url); // Päivitetään nykyinen url
+    }
     statusEl.textContent = 'Ladataan...';
     $('#loader').style.display = "block"; // Näytetään latausspinneri
     const items = await searchImages(q); // BUG: ei try/catch - Tämä korjattu
@@ -153,3 +162,30 @@ const io = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.25 }); // Threshold määritetty: Teksti vaihtuu kun laatikko on vähintään 25 % näkyvissä
 io.observe(box);
+
+// URL & History API
+function AutoSearch() {
+    // Haetaan URL parametrit muuttujaan
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    // Haetaan q parametri
+    let parameterValue = urlSearchParams.get('q');
+    // Jos q parametrille arvo määritetty
+    if(parameterValue != null) {
+        // Täytetään haku-input q parametrin arvolla
+        $('#q').value = parameterValue;
+        // Suoritetaan haku automaattisesti
+        $('#searchSubmit').click();
+    }
+}
+
+// Sivun latauduttua tarkistetaan/suoritetaan automaattinen haku
+window.addEventListener('DOMContentLoaded', () => {
+    enablePushState = 'yes'; // PushState suoritetaan tarvittaessa
+    AutoSearch();
+});
+
+// Käsitellään popstate
+window.onpopstate = function() {
+    enablePushState = 'no'; // PushStatea ei suoriteta
+    AutoSearch();
+}
