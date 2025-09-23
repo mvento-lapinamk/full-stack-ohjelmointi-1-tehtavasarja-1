@@ -188,4 +188,35 @@ window.addEventListener('DOMContentLoaded', () => {
 window.onpopstate = function() {
     enablePushState = 'no'; // PushStatea ei suoriteta
     AutoSearch();
+    $('#debounceText').textContent = ''; // Tyhjennetään Debounce-teksti
 }
+
+
+// Debounce hakukentälle input-tapahtumaan
+// Kun hakukenttään kirjoitetaan, näytetään kirjoitus kentän alla sekunnin viiveellä
+
+// Määritetään hakukenttä input muuttujaksi
+const searchElement = $('#q');
+
+// Seurataan hakukentän arvoa
+const searchData = (event) => {
+    const value = event.target.value;
+    // Päivitetään hakukentän alla olevaan elementtiin tekstiä
+    $('#debounceText').textContent = ('Kirjoitit hakukenttään: ' + value);
+}
+
+// Määritetään debounce
+const debounce = (callback, waitTime) => {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            callback(...args);
+        }, waitTime);
+    };
+}
+
+// Viiveeksi yksi sekunti
+const debounceHandler = debounce(searchData, 1000);
+// Tapahtumakuuntelija
+searchElement.addEventListener('input', debounceHandler);
